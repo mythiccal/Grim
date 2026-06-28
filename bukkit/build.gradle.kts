@@ -173,6 +173,11 @@ bukkit {
             default = Permission.Default.FALSE
         }
 
+        register("grim.ignore") {
+            description = "Toggle Simulation alert ignore for a player"
+            default = Permission.Default.OP
+        }
+
     }
 }
 

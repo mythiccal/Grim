@@ -7,6 +7,7 @@ import ac.grim.grimac.api.config.ConfigReloadable;
 import ac.grim.grimac.api.event.events.CommandExecuteEvent;
 import ac.grim.grimac.checks.Check;
 import ac.grim.grimac.events.packets.ProxyAlertMessenger;
+import ac.grim.grimac.feature.ignore.PlayerIgnoreManager;
 import ac.grim.grimac.platform.api.player.PlatformPlayer;
 import ac.grim.grimac.player.GrimPlayer;
 import ac.grim.grimac.utils.anticheat.LogUtil;
@@ -171,14 +172,16 @@ public class PunishmentManager implements ConfigReloadable {
                                 }
                                 case "[proxy]" -> ProxyAlertMessenger.sendPluginMessage(cmd);
                                 case "[alert]" -> {
-                                    sentDebug = true;
-                                    Component message = MessageUtil.miniMessage(cmd);
-                                    if (testMode) { // secret test mode
-                                        if (verboseListeners == null || verboseListeners.contains(player.platformPlayer)) {
-                                            player.sendMessage(message);
+                                    if (!PlayerIgnoreManager.get().shouldSuppressSimulationAlert(player.getUniqueId(), check)) {
+                                        sentDebug = true;
+                                        Component message = MessageUtil.miniMessage(cmd);
+                                        if (testMode) { // secret test mode
+                                            if (verboseListeners == null || verboseListeners.contains(player.platformPlayer)) {
+                                                player.sendMessage(message);
+                                            }
+                                        } else {
+                                            GrimAPI.INSTANCE.getAlertManager().sendAlert(message, verboseListeners);
                                         }
-                                    } else {
-                                        GrimAPI.INSTANCE.getAlertManager().sendAlert(message, verboseListeners);
                                     }
                                 }
                                 default -> GrimAPI.INSTANCE.getScheduler().getGlobalRegionScheduler().run(GrimAPI.INSTANCE.getGrimPlugin(), () ->

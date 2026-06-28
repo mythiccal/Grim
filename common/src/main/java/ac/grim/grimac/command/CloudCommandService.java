@@ -60,6 +60,7 @@ public class CloudCommandService implements CommandService {
         new GrimDump().register(commandManager, commandArguments);
         new GrimBrands().register(commandManager, commandArguments);
         new GrimList().register(commandManager, commandArguments);
+        new GrimIgnore().register(commandManager, commandArguments);
         new GrimTestWebhook().register(commandManager, commandArguments);
 
         final RequirementPostprocessor<Sender, SenderRequirement>
